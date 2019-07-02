@@ -23,7 +23,7 @@
 
 ## 下载地址
 
-- [https://github.com/lisijie/gopub/releases](https://github.com/lisijie/gopub/releases)
+- [https://github.com/Soul-Yang/gopub/releases](https://github.com/Soul-Yang/gopub/releases)
 
 ## 安装
 
