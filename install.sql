@@ -1,17 +1,51 @@
+-- phpMyAdmin SQL Dump
+-- version 4.7.9
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: 2019-07-03 14:55:03
+-- 服务器版本： 5.7.26-log
+-- PHP Version: 7.1.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `push`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_action`
+--
+
 CREATE TABLE `t_action` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL,
   `action` varchar(20) NOT NULL DEFAULT '',
   `actor` varchar(20) NOT NULL DEFAULT '',
   `object_type` varchar(20) NOT NULL DEFAULT '',
   `object_id` int(11) NOT NULL DEFAULT '0',
   `extra` varchar(1000) NOT NULL DEFAULT '',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `create_time` (`create_time`)
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_env`
+--
+
 CREATE TABLE `t_env` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(20) NOT NULL DEFAULT '',
   `ssh_user` varchar(20) NOT NULL DEFAULT '',
@@ -26,22 +60,30 @@ CREATE TABLE `t_env` (
   `mail_to` varchar(1000) NOT NULL DEFAULT '',
   `mail_cc` varchar(1000) NOT NULL DEFAULT '',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `t_env_project_id` (`project_id`)
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_env_server`
+--
 
 CREATE TABLE `t_env_server` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL DEFAULT '0',
   `env_id` int(11) NOT NULL DEFAULT '0',
-  `server_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `t_env_server_env_id` (`env_id`)
+  `server_id` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_mail_tpl`
+--
+
 CREATE TABLE `t_mail_tpl` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL DEFAULT '',
   `subject` varchar(200) NOT NULL DEFAULT '',
@@ -49,18 +91,73 @@ CREATE TABLE `t_mail_tpl` (
   `mail_to` varchar(1000) NOT NULL DEFAULT '',
   `mail_cc` varchar(1000) NOT NULL DEFAULT '',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_perm`
+--
 
 CREATE TABLE `t_perm` (
   `module` varchar(20) NOT NULL DEFAULT '' COMMENT '模块名',
-  `action` varchar(20) NOT NULL DEFAULT '' COMMENT '操作名',
-  UNIQUE KEY `module` (`module`,`action`)
+  `action` varchar(20) NOT NULL DEFAULT '' COMMENT '操作名'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- 转存表中的数据 `t_perm`
+--
+
+INSERT INTO `t_perm` (`module`, `action`) VALUES
+('agent', 'add'),
+('agent', 'del'),
+('agent', 'edit'),
+('agent', 'list'),
+('agent', 'projects'),
+('env', 'add'),
+('env', 'del'),
+('env', 'edit'),
+('env', 'list'),
+('mailtpl', 'add'),
+('mailtpl', 'del'),
+('mailtpl', 'edit'),
+('mailtpl', 'list'),
+('project', 'add'),
+('project', 'del'),
+('project', 'edit'),
+('project', 'list'),
+('review', 'detail'),
+('review', 'list'),
+('review', 'review'),
+('role', 'add'),
+('role', 'del'),
+('role', 'edit'),
+('role', 'list'),
+('role', 'perm'),
+('server', 'add'),
+('server', 'del'),
+('server', 'edit'),
+('server', 'list'),
+('server', 'projects'),
+('task', 'create'),
+('task', 'del'),
+('task', 'detail'),
+('task', 'list'),
+('task', 'publish'),
+('user', 'add'),
+('user', 'del'),
+('user', 'edit'),
+('user', 'list');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_project`
+--
+
 CREATE TABLE `t_project` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL DEFAULT '',
   `domain` varchar(100) NOT NULL DEFAULT '',
   `version` varchar(20) NOT NULL DEFAULT '',
@@ -76,28 +173,105 @@ CREATE TABLE `t_project` (
   `verfile_path` varchar(50) NOT NULL DEFAULT '',
   `task_review` tinyint(4) NOT NULL DEFAULT '0' COMMENT '发布是否需要审批',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_role`
+--
+
 CREATE TABLE `t_role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `role_name` varchar(20) NOT NULL DEFAULT '',
   `project_ids` varchar(1000) NOT NULL DEFAULT '',
   `description` varchar(200) NOT NULL DEFAULT '',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `t_role`
+--
+
+INSERT INTO `t_role` (`id`, `role_name`, `project_ids`, `description`, `create_time`, `update_time`) VALUES
+(1, '系统管理员', '', '', '2016-05-11 02:33:59', '2016-05-11 02:33:59'),
+(2, '发版人员', '', '', '2016-05-11 02:34:15', '2016-05-11 02:34:15'),
+(3, '审批人员', '', '', '2016-05-11 02:34:22', '2016-05-11 02:34:22');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_role_perm`
+--
 
 CREATE TABLE `t_role_perm` (
-  `role_id` int(11) unsigned NOT NULL,
-  `perm` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`role_id`,`perm`)
+  `role_id` int(11) UNSIGNED NOT NULL,
+  `perm` varchar(50) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- 转存表中的数据 `t_role_perm`
+--
+
+INSERT INTO `t_role_perm` (`role_id`, `perm`) VALUES
+(1, 'agent.add'),
+(1, 'agent.del'),
+(1, 'agent.edit'),
+(1, 'agent.list'),
+(1, 'agent.projects'),
+(1, 'env.add'),
+(1, 'env.del'),
+(1, 'env.edit'),
+(1, 'env.list'),
+(1, 'mailtpl.add'),
+(1, 'mailtpl.del'),
+(1, 'mailtpl.edit'),
+(1, 'mailtpl.list'),
+(1, 'project.add'),
+(1, 'project.del'),
+(1, 'project.edit'),
+(1, 'project.list'),
+(1, 'review.detail'),
+(1, 'review.list'),
+(1, 'review.review'),
+(1, 'role.add'),
+(1, 'role.del'),
+(1, 'role.edit'),
+(1, 'role.list'),
+(1, 'role.perm'),
+(1, 'server.add'),
+(1, 'server.del'),
+(1, 'server.edit'),
+(1, 'server.list'),
+(1, 'server.projects'),
+(1, 'task.create'),
+(1, 'task.del'),
+(1, 'task.detail'),
+(1, 'task.list'),
+(1, 'task.publish'),
+(1, 'user.add'),
+(1, 'user.del'),
+(1, 'user.edit'),
+(1, 'user.list'),
+(2, 'task.create'),
+(2, 'task.del'),
+(2, 'task.detail'),
+(2, 'task.list'),
+(2, 'task.publish'),
+(3, 'review.detail'),
+(3, 'review.list'),
+(3, 'review.review');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_server`
+--
+
 CREATE TABLE `t_server` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `type_id` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:普通服务器, 1:跳板机',
   `ip` varchar(20) NOT NULL DEFAULT '' COMMENT '服务器IP',
   `area` varchar(20) NOT NULL DEFAULT '' COMMENT '机房',
@@ -108,12 +282,17 @@ CREATE TABLE `t_server` (
   `ssh_key` varchar(100) NOT NULL DEFAULT '' COMMENT 'sshkey路径',
   `work_dir` varchar(100) NOT NULL DEFAULT '' COMMENT '工作目录',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_task`
+--
+
 CREATE TABLE `t_task` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL DEFAULT '0' COMMENT '项目ID',
   `start_ver` varchar(20) NOT NULL DEFAULT '' COMMENT '起始版本',
   `end_ver` varchar(20) NOT NULL DEFAULT '' COMMENT '结束版本',
@@ -131,27 +310,33 @@ CREATE TABLE `t_task` (
   `pub_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '发布状态',
   `review_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '审批状态',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `t_task_project_id` (`project_id`),
-  KEY `t_task_user_id` (`user_id`),
-  KEY `pub_time` (`pub_time`)
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_task_review`
+--
+
 CREATE TABLE `t_task_review` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL,
   `task_id` int(11) NOT NULL COMMENT '任务ID',
   `user_id` int(11) NOT NULL COMMENT '审批人ID',
   `user_name` varchar(20) NOT NULL DEFAULT '' COMMENT '审批人名称',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '审批结果(1:通过;0:不通过)',
   `message` varchar(1000) NOT NULL DEFAULT '' COMMENT '审批说明',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '审批时间',
-  PRIMARY KEY (`id`),
-  KEY `task_id` (`task_id`)
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '审批时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_user`
+--
+
 CREATE TABLE `t_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `user_name` varchar(20) NOT NULL DEFAULT '',
   `password` varchar(32) NOT NULL DEFAULT '',
   `salt` varchar(10) NOT NULL DEFAULT '',
@@ -161,118 +346,182 @@ CREATE TABLE `t_user` (
   `last_ip` varchar(15) NOT NULL DEFAULT '',
   `status` int(11) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_name` (`user_name`)
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `t_user`
+--
+
+INSERT INTO `t_user` (`id`, `user_name`, `password`, `salt`, `sex`, `email`, `last_login`, `last_ip`, `status`, `create_time`, `update_time`) VALUES
+(1, 'admin', '7fef6171469e80d32c0559f88b377245', '', 1, 'admin@admin.com', '2019-07-03 14:10:34', '127.0.0.1', 0, '0000-00-00 00:00:00', '2019-07-03 06:10:34');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `t_user_role`
+--
 
 CREATE TABLE `t_user_role` (
-  `user_id` int(11) unsigned NOT NULL,
-  `role_id` int(11) unsigned NOT NULL,
-  UNIQUE KEY `user_id` (`user_id`,`role_id`)
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `role_id` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Indexes for dumped tables
+--
 
-INSERT INTO `t_perm` (`module`, `action`)
-VALUES
-	('agent','add'),
-	('agent','del'),
-	('agent','edit'),
-	('agent','list'),
-	('agent','projects'),
-	('env','add'),
-	('env','del'),
-	('env','edit'),
-	('env','list'),
-	('mailtpl','add'),
-	('mailtpl','del'),
-	('mailtpl','edit'),
-	('mailtpl','list'),
-	('project','add'),
-	('project','del'),
-	('project','edit'),
-	('project','list'),
-	('review','detail'),
-	('review','list'),
-	('review','review'),
-	('role','add'),
-	('role','del'),
-	('role','edit'),
-	('role','list'),
-	('role','perm'),
-	('server','add'),
-	('server','del'),
-	('server','edit'),
-	('server','list'),
-	('server','projects'),
-	('task','create'),
-	('task','del'),
-	('task','detail'),
-	('task','list'),
-	('task','publish'),
-	('user','add'),
-	('user','del'),
-	('user','edit'),
-	('user','list');
+--
+-- Indexes for table `t_action`
+--
+ALTER TABLE `t_action`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `create_time` (`create_time`);
 
+--
+-- Indexes for table `t_env`
+--
+ALTER TABLE `t_env`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `t_env_project_id` (`project_id`);
 
-INSERT INTO `t_role` (`id`, `role_name`, `project_ids`, `description`, `create_time`, `update_time`)
-VALUES
-	(1,'系统管理员','','','2016-05-11 10:33:59','2016-05-11 10:33:59'),
-	(2,'发版人员','','','2016-05-11 10:34:15','2016-05-11 10:34:15'),
-	(3,'审批人员','','','2016-05-11 10:34:22','2016-05-11 10:34:22');
+--
+-- Indexes for table `t_env_server`
+--
+ALTER TABLE `t_env_server`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `t_env_server_env_id` (`env_id`);
 
+--
+-- Indexes for table `t_mail_tpl`
+--
+ALTER TABLE `t_mail_tpl`
+  ADD PRIMARY KEY (`id`);
 
-INSERT INTO `t_role_perm` (`role_id`, `perm`)
-VALUES
-	(1,'agent.add'),
-	(1,'agent.del'),
-	(1,'agent.edit'),
-	(1,'agent.list'),
-	(1,'agent.projects'),
-	(1,'env.add'),
-	(1,'env.del'),
-	(1,'env.edit'),
-	(1,'env.list'),
-	(1,'mailtpl.add'),
-	(1,'mailtpl.del'),
-	(1,'mailtpl.edit'),
-	(1,'mailtpl.list'),
-	(1,'project.add'),
-	(1,'project.del'),
-	(1,'project.edit'),
-	(1,'project.list'),
-	(1,'review.detail'),
-	(1,'review.list'),
-	(1,'review.review'),
-	(1,'role.add'),
-	(1,'role.del'),
-	(1,'role.edit'),
-	(1,'role.list'),
-	(1,'role.perm'),
-	(1,'server.add'),
-	(1,'server.del'),
-	(1,'server.edit'),
-	(1,'server.list'),
-	(1,'server.projects'),
-	(1,'task.create'),
-	(1,'task.del'),
-	(1,'task.detail'),
-	(1,'task.list'),
-	(1,'task.publish'),
-	(1,'user.add'),
-	(1,'user.del'),
-	(1,'user.edit'),
-	(1,'user.list'),
-	(2,'task.create'),
-	(2,'task.del'),
-	(2,'task.detail'),
-	(2,'task.list'),
-	(2,'task.publish'),
-	(3,'review.detail'),
-	(3,'review.list'),
-	(3,'review.review');
+--
+-- Indexes for table `t_perm`
+--
+ALTER TABLE `t_perm`
+  ADD UNIQUE KEY `module` (`module`,`action`);
 
-INSERT INTO `t_user` (`id`, `user_name`, `password`, `salt`, `sex`, `email`, `last_login`, `last_ip`, `status`, `create_time`, `update_time`)
-VALUES
-	(1,'admin','7fef6171469e80d32c0559f88b377245','',1,'admin@admin.com','2016-05-11 10:33:49','127.0.0.1',0,'0000-00-00 00:00:00','2016-05-11 10:33:49');
+--
+-- Indexes for table `t_project`
+--
+ALTER TABLE `t_project`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `t_role`
+--
+ALTER TABLE `t_role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `t_role_perm`
+--
+ALTER TABLE `t_role_perm`
+  ADD PRIMARY KEY (`role_id`,`perm`);
+
+--
+-- Indexes for table `t_server`
+--
+ALTER TABLE `t_server`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `t_task`
+--
+ALTER TABLE `t_task`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `t_task_project_id` (`project_id`),
+  ADD KEY `t_task_user_id` (`user_id`),
+  ADD KEY `pub_time` (`pub_time`);
+
+--
+-- Indexes for table `t_task_review`
+--
+ALTER TABLE `t_task_review`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `task_id` (`task_id`);
+
+--
+-- Indexes for table `t_user`
+--
+ALTER TABLE `t_user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_name` (`user_name`);
+
+--
+-- Indexes for table `t_user_role`
+--
+ALTER TABLE `t_user_role`
+  ADD UNIQUE KEY `user_id` (`user_id`,`role_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `t_action`
+--
+ALTER TABLE `t_action`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_env`
+--
+ALTER TABLE `t_env`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_env_server`
+--
+ALTER TABLE `t_env_server`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_mail_tpl`
+--
+ALTER TABLE `t_mail_tpl`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_project`
+--
+ALTER TABLE `t_project`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_role`
+--
+ALTER TABLE `t_role`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- 使用表AUTO_INCREMENT `t_server`
+--
+ALTER TABLE `t_server`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_task`
+--
+ALTER TABLE `t_task`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_task_review`
+--
+ALTER TABLE `t_task_review`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `t_user`
+--
+ALTER TABLE `t_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
